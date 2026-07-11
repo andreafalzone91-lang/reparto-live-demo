@@ -4,7 +4,7 @@ const freshLine = name => ({name,stage:'idle',customer:'',bottle:'',prePieces:10
 const initial = () => ({customers:[],bottles:[],lines:Object.fromEntries(names.map(n=>[n,freshLine(n)]))});
 const API_URL='https://ghaxikrkosdeelqhfice.supabase.co/rest/v1/shared_state?id=eq.1';
 const API_KEY='sb_publishable_N_vKWdSfxtnZVGsStl2YGQ_uxdoU3Wb';
-let appState=initial(), saving=false, ready=false;
+let appState=initial(), saving=false, ready=false, lastRemoteUpdated='';
 let selected = 'KD';
 const actorEl=$('#actor'), roleEl=$('#role');
 actorEl.value=localStorage.getItem('reparto-actor')||'Demo'; roleEl.value=localStorage.getItem('reparto-role')||'Operatore';
@@ -18,20 +18,21 @@ const showTime=iso=>new Date(iso).toLocaleString('it-IT',{hour:'2-digit',minute:
 async function save(){
  saving=true;
  try{
-  const r=await fetch(API_URL,{method:'PATCH',headers:{apikey:API_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({payload:appState,updated_at:new Date().toISOString()})});
+  const stamp=new Date().toISOString();
+  const r=await fetch(API_URL,{method:'PATCH',headers:{apikey:API_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({payload:appState,updated_at:stamp})});
   if(!r.ok)throw Error('Salvataggio condiviso non riuscito');
+  lastRemoteUpdated=stamp;
   localStorage.setItem('reparto-shared-cache',JSON.stringify(appState));
  }finally{saving=false}
 }
 async function loadRemote(){
  if(saving)return;
  try{
-  const r=await fetch(API_URL+'&select=payload',{headers:{apikey:API_KEY},cache:'no-store'});
+  const r=await fetch(API_URL+'&select=payload,updated_at',{headers:{apikey:API_KEY},cache:'no-store'});
   if(!r.ok)throw Error('Connessione al database non disponibile');
   const rows=await r.json();
   if(rows[0]?.payload&&Object.keys(rows[0].payload.lines||{}).length){
-   const incoming=JSON.stringify(rows[0].payload),current=JSON.stringify(appState);
-   if(incoming!==current){appState=rows[0].payload;render()}
+   if(rows[0].updated_at!==lastRemoteUpdated){appState=rows[0].payload;lastRemoteUpdated=rows[0].updated_at;render()}
   }else{appState=initial();await save();render()}
   ready=true;
  }catch(e){
