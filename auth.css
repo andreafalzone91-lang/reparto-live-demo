@@ -6,4 +6,5 @@
 .user-row{display:grid;grid-template-columns:1.5fr .8fr .8fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #cbd5e1}
 .user-row small{display:block;color:#64748b}
 .badge{padding:5px 9px;border-radius:999px;background:#e2e8f0;font-size:.8rem;font-weight:700}
+.line{min-height:98px}.line small b{font-size:.9rem}
 @media(max-width:760px){.user-row{grid-template-columns:1fr 1fr}.user-row>div:first-child{grid-column:1/-1}}
