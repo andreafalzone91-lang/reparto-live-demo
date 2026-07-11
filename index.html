@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#172033">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Reparto Live">
+  <title>Reparto Live</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header>
+    <div><h1>Reparto Live</h1><p>Stazioni vibranti e passaggio consegne</p></div>
+    <div class="identity">
+      <label>Nome<input id="actor" placeholder="Il tuo nome"></label>
+      <label>Ruolo<select id="role"><option>Operatore</option><option>CT</option></select></label>
+    </div>
+  </header>
+  <main>
+    <div class="legend"><span class="green">In corso</span><span class="orange">Pre-raclage</span><span class="yellow">Raclage</span><span class="blue">Scarico</span><span class="red">Finito</span></div>
+    <section id="lines" class="lines" aria-label="Linee"></section>
+    <section class="workspace">
+      <div id="panel" class="panel"></div>
+      <aside><h2>Attività</h2><div id="activity"></div></aside>
+    </section>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
