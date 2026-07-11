@@ -1,0 +1,13 @@
+{
+  "name": "Reparto Live",
+  "short_name": "Reparto",
+  "description": "Gestione dimostrativa delle stazioni vibranti",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6fa",
+  "theme_color": "#172033",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
