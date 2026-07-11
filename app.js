@@ -1,6 +1,6 @@
 const $=s=>document.querySelector(s);
-const URL='https://ghaxikrkosdeelqhfice.supabase.co',KEY='sb_publishable_N_vKWdSfxtnZVGsStl2YGQ_uxdoU3Wb';
-const db=supabase.createClient(URL,KEY),names=['KD','KP','KF','KR','KT','KA','KW','KK','KO','KB'];
+const SUPABASE_URL='https://ghaxikrkosdeelqhfice.supabase.co',KEY='sb_publishable_N_vKWdSfxtnZVGsStl2YGQ_uxdoU3Wb';
+const db=supabase.createClient(SUPABASE_URL,KEY),names=['KD','KP','KF','KR','KT','KA','KW','KK','KO','KB'];
 const freshLine=name=>({name,stage:'idle',color:'',bottle:'',prePieces:10000,bag1:1,bag2:1,extraRequested:false,extraLoaded:false,extraAssignedTo:'',assignedTo:'',remainingPieces:null,ctDecision:'',cleanConfirmed:false,nextBottle:'',activity:[]});
 const initial=()=>({bottles:[],bottleColors:{},lines:Object.fromEntries(names.map(n=>[n,freshLine(n)]))});
 let session=null,profile=null,appState=initial(),selected='KD',saving=false,loading=false,lastRemoteUpdated='';
