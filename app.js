@@ -4,7 +4,7 @@ const freshLine = name => ({name,stage:'idle',customer:'',bottle:'',prePieces:10
 const initial = () => ({customers:[],bottles:[],lines:Object.fromEntries(names.map(n=>[n,freshLine(n)]))});
 const API_URL='https://ghaxikrkosdeelqhfice.supabase.co/rest/v1/shared_state?id=eq.1';
 const API_KEY='sb_publishable_N_vKWdSfxtnZVGsStl2YGQ_uxdoU3Wb';
-let appState=initial(), saving=false, ready=false, lastRemoteUpdated='';
+let appState=initial(), saving=false, loading=false, ready=false, lastRemoteUpdated='';
 let selected = 'KD';
 const actorEl=$('#actor'), roleEl=$('#role');
 actorEl.value=localStorage.getItem('reparto-actor')||'Demo'; roleEl.value=localStorage.getItem('reparto-role')||'Operatore';
@@ -26,7 +26,8 @@ async function save(){
  }finally{saving=false}
 }
 async function loadRemote(){
- if(saving)return;
+ if(saving||loading)return;
+ loading=true;
  try{
   const r=await fetch(API_URL+'&select=payload,updated_at',{headers:{apikey:API_KEY},cache:'no-store'});
   if(!r.ok)throw Error('Connessione al database non disponibile');
@@ -39,7 +40,7 @@ async function loadRemote(){
   const cached=localStorage.getItem('reparto-shared-cache');
   if(cached&&!ready){try{appState=JSON.parse(cached);render()}catch{}}
   toast(e.message,true);
- }
+ }finally{loading=false}
 }
 function event(line,text,actor){line.activity.unshift({text,actor,at:now()});line.activity=line.activity.slice(0,100)}
 function toast(text,error=false){const e=$('#toast');e.textContent=text;e.style.background=error?'#991b1b':'#172033';e.style.display='block';setTimeout(()=>e.style.display='none',2300)}
@@ -85,4 +86,5 @@ function render(){
 }
 function bind(){const on=(id,fn)=>{const e=$('#'+id);if(e)e.onclick=fn};on('savePre',()=>act('save-pre',{customer:$('#customer').value,bottle:$('#bottle').value,prePieces:$('#prePieces').value,extraRequested:$('#extra').value==='yes'}));on('takePre',()=>act('take-pre'));on('extraLoaded',()=>act('extra-loaded'));on('submitPre',()=>act('submit-pre',{bag1:$('#bag1').value,bag2:$('#bag2').value}));on('callRaclage',()=>act('call-raclage'));on('takeRaclage',()=>act('take-raclage'));on('submitRaclage',()=>act('submit-raclage',{remainingPieces:$('#remaining').value}));on('ctOk',()=>act('ct-decision',{decision:'ok'}));on('ctNo',()=>act('ct-decision',{decision:'no'}));on('startUnload',()=>act('start-unload'));on('confirmClean',()=>{if(!$('#cleanCheck').checked)return toast('Conferma la verifica della linea',true);act('confirm-clean')});on('nextLoad',()=>act('next-load',{nextBottle:$('#nextBottle').value}));on('reset',()=>act('reset'))}
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
-render();loadRemote();setInterval(loadRemote,2000);
+$('#panel').innerHTML='<p class="muted">Collegamento ai dati condivisi…</p>';
+loadRemote();setInterval(loadRemote,2000);
