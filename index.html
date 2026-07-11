@@ -12,16 +12,15 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./auth.css">
 </head>
 <body>
   <header>
     <div><h1>Reparto Live</h1><p>Stazioni vibranti e passaggio consegne</p></div>
-    <div class="identity">
-      <label>Nome<input id="actor" placeholder="Il tuo nome"></label>
-      <label>Ruolo<select id="role"><option>Operatore</option><option>CT</option></select></label>
-    </div>
+    <div id="identity" class="identity"></div>
   </header>
-  <main>
+  <section id="access" class="access-card"></section>
+  <main id="app" hidden>
     <div class="legend"><span class="green">In corso</span><span class="orange">Pre-raclage</span><span class="yellow">Raclage</span><span class="blue">Scarico</span><span class="red">Finito</span></div>
     <section id="lines" class="lines" aria-label="Linee"></section>
     <section class="workspace">
@@ -30,6 +29,7 @@
     </section>
   </main>
   <div id="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./app.js"></script>
 </body>
 </html>
