@@ -2,8 +2,9 @@ const $ = s => document.querySelector(s);
 const names = ['KD','KP','KF','KR','KT','KA','KW','KK','KO','KB'];
 const freshLine = name => ({name,stage:'idle',customer:'',bottle:'',prePieces:10000,bag1:1,bag2:1,extraRequested:false,extraLoaded:false,assignedTo:'',remainingPieces:null,ctDecision:'',cleanConfirmed:false,nextBottle:'',activity:[]});
 const initial = () => ({customers:[],bottles:[],lines:Object.fromEntries(names.map(n=>[n,freshLine(n)]))});
-let appState;
-try { appState = JSON.parse(localStorage.getItem('reparto-demo-state')) || initial(); } catch { appState = initial(); }
+const API_URL='https://ghaxikrkosdeelqhfice.supabase.co/rest/v1/shared_state?id=eq.1';
+const API_KEY='sb_publishable_N_vKWdSfxtnZVGsStl2YGQ_uxdoU3Wb';
+let appState=initial(), saving=false, ready=false;
 let selected = 'KD';
 const actorEl=$('#actor'), roleEl=$('#role');
 actorEl.value=localStorage.getItem('reparto-actor')||'Demo'; roleEl.value=localStorage.getItem('reparto-role')||'Operatore';
@@ -14,10 +15,32 @@ const cls=s=>s==='pre'?'pre':s==='progress'?'progress':s==='unload'?'unload':s==
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const now=()=>new Date().toISOString();
 const showTime=iso=>new Date(iso).toLocaleString('it-IT',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'});
-function save(){localStorage.setItem('reparto-demo-state',JSON.stringify(appState))}
+async function save(){
+ saving=true;
+ try{
+  const r=await fetch(API_URL,{method:'PATCH',headers:{apikey:API_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({payload:appState,updated_at:new Date().toISOString()})});
+  if(!r.ok)throw Error('Salvataggio condiviso non riuscito');
+  localStorage.setItem('reparto-shared-cache',JSON.stringify(appState));
+ }finally{saving=false}
+}
+async function loadRemote(){
+ if(saving)return;
+ try{
+  const r=await fetch(API_URL+'&select=payload',{headers:{apikey:API_KEY},cache:'no-store'});
+  if(!r.ok)throw Error('Connessione al database non disponibile');
+  const rows=await r.json();
+  if(rows[0]?.payload&&Object.keys(rows[0].payload.lines||{}).length){appState=rows[0].payload}
+  else{appState=initial();await save()}
+  ready=true;render();
+ }catch(e){
+  const cached=localStorage.getItem('reparto-shared-cache');
+  if(cached&&!ready){try{appState=JSON.parse(cached);render()}catch{}}
+  toast(e.message,true);
+ }
+}
 function event(line,text,actor){line.activity.unshift({text,actor,at:now()});line.activity=line.activity.slice(0,100)}
 function toast(text,error=false){const e=$('#toast');e.textContent=text;e.style.background=error?'#991b1b':'#172033';e.style.display='block';setTimeout(()=>e.style.display='none',2300)}
-function act(type,x={}){
+async function act(type,x={}){
  const a=actorEl.value.trim()||'Demo',l=appState.lines[selected];
  try{
   if(type==='save-pre'){l.customer=x.customer.trim();l.bottle=x.bottle.trim();l.prePieces=Math.max(0,Number(x.prePieces||0));l.extraRequested=x.extraRequested;l.extraLoaded=false;l.assignedTo='';l.stage='pre';if(l.customer&&!appState.customers.includes(l.customer))appState.customers.push(l.customer);if(l.bottle&&!appState.bottles.includes(l.bottle))appState.bottles.push(l.bottle);event(l,`Pre-raclage: ${l.prePieces.toLocaleString('it-IT')} flaconi mancanti`,a)}
@@ -32,7 +55,7 @@ function act(type,x={}){
   else if(type==='confirm-clean'){l.cleanConfirmed=true;l.stage='finished';event(l,'Linea completamente pulita',a)}
   else if(type==='next-load'){l.nextBottle=x.nextBottle.trim();if(!l.nextBottle)throw Error('Inserisci il codice successivo');if(!appState.bottles.includes(l.nextBottle))appState.bottles.push(l.nextBottle);l.bottle=l.nextBottle;l.stage='progress';l.cleanConfirmed=false;l.remainingPieces=null;event(l,`Inizio carico codice ${l.nextBottle}`,a)}
   else if(type==='reset'){const activity=l.activity;appState.lines[selected]=freshLine(selected);appState.lines[selected].activity=activity;event(appState.lines[selected],'Linea riportata a riposo',a)}
-  save();render();
+  await save();render();
  }catch(e){toast(e.message,true)}
 }
 function lists(){return `<datalist id="customers">${appState.customers.map(x=>`<option value="${esc(x)}">`).join('')}</datalist><datalist id="bottles">${appState.bottles.map(x=>`<option value="${esc(x)}">`).join('')}</datalist>`}
@@ -58,4 +81,5 @@ function render(){
  $('#activity').innerHTML=l.activity.length?l.activity.map(e=>`<div class="event"><strong>${esc(e.text)}</strong><small>${esc(e.actor)} · ${showTime(e.at)}</small></div>`).join(''):'<p class="muted">Nessuna attività.</p>';
 }
 function bind(){const on=(id,fn)=>{const e=$('#'+id);if(e)e.onclick=fn};on('savePre',()=>act('save-pre',{customer:$('#customer').value,bottle:$('#bottle').value,prePieces:$('#prePieces').value,extraRequested:$('#extra').value==='yes'}));on('takePre',()=>act('take-pre'));on('extraLoaded',()=>act('extra-loaded'));on('submitPre',()=>act('submit-pre',{bag1:$('#bag1').value,bag2:$('#bag2').value}));on('callRaclage',()=>act('call-raclage'));on('takeRaclage',()=>act('take-raclage'));on('submitRaclage',()=>act('submit-raclage',{remainingPieces:$('#remaining').value}));on('ctOk',()=>act('ct-decision',{decision:'ok'}));on('ctNo',()=>act('ct-decision',{decision:'no'}));on('startUnload',()=>act('start-unload'));on('confirmClean',()=>{if(!$('#cleanCheck').checked)return toast('Conferma la verifica della linea',true);act('confirm-clean')});on('nextLoad',()=>act('next-load',{nextBottle:$('#nextBottle').value}));on('reset',()=>act('reset'))}
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});render();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+render();loadRemote();setInterval(loadRemote,2000);
