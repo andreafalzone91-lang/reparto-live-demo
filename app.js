@@ -29,9 +29,11 @@ async function loadRemote(){
   const r=await fetch(API_URL+'&select=payload',{headers:{apikey:API_KEY},cache:'no-store'});
   if(!r.ok)throw Error('Connessione al database non disponibile');
   const rows=await r.json();
-  if(rows[0]?.payload&&Object.keys(rows[0].payload.lines||{}).length){appState=rows[0].payload}
-  else{appState=initial();await save()}
-  ready=true;render();
+  if(rows[0]?.payload&&Object.keys(rows[0].payload.lines||{}).length){
+   const incoming=JSON.stringify(rows[0].payload),current=JSON.stringify(appState);
+   if(incoming!==current){appState=rows[0].payload;render()}
+  }else{appState=initial();await save();render()}
+  ready=true;
  }catch(e){
   const cached=localStorage.getItem('reparto-shared-cache');
   if(cached&&!ready){try{appState=JSON.parse(cached);render()}catch{}}
