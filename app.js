@@ -41,7 +41,7 @@ async function act(type,x={}){let l=appState.lines[selected];try{
  else if(type==='ct-decision'){l.ctDecision=x.decision;l.stage=x.decision==='ok'?'raclage-ok':'raclage';event(l,`Risposta CT: ${x.decision==='ok'?'OK':'Non OK'}`)}
  else if(type==='start-unload'){l.stage='unload';l.assignedTo=actor();event(l,'Scarico linea in corso')}
  else if(type==='confirm-clean'){l.cleanConfirmed=true;l.stage='finished';event(l,'Linea completamente pulita')}
- else if(type==='next-load'){l.nextBottle=x.nextBottle.trim();if(!l.nextBottle)throw Error('Inserisci il codice successivo');l.bottle=l.nextBottle;l.color=appState.bottleColors[l.nextBottle]||'';l.stage='running';l.cleanConfirmed=false;l.remainingPieces=null;event(l,`Inizio carico codice ${l.nextBottle}`)}
+ else if(type==='next-load'){l.nextBottle=x.nextBottle.trim();if(!l.nextBottle)throw Error('Inserisci il codice successivo');if(!appState.bottleColors[l.nextBottle])throw Error('Il codice successivo non è presente nell’archivio');l.bottle=l.nextBottle;l.color=appState.bottleColors[l.nextBottle]||'';l.bottleName=appState.bottleNames[l.nextBottle]||'Flacone';l.bottleImage=appState.bottleImages[l.nextBottle]||'';l.stage='running';l.cleanConfirmed=false;l.remainingPieces=null;event(l,`Inizio carico codice ${l.nextBottle} · ${l.bottleName}`)}
  else if(type==='reset'){const activity=l.activity;appState.lines[selected]=freshLine(selected);appState.lines[selected].activity=activity;event(appState.lines[selected],'Linea riportata a riposo')}
  await save();render()
  }catch(e){toast(e.message,true)}}
