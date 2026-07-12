@@ -7,4 +7,5 @@
 .user-row small{display:block;color:#64748b}
 .badge{padding:5px 9px;border-radius:999px;background:#e2e8f0;font-size:.8rem;font-weight:700}
 .line{min-height:98px}.line small b{font-size:.9rem}
+.bottle-card{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.78rem;line-height:1.25}.line-photo{width:44px;height:44px;object-fit:cover;border-radius:9px;background:white;border:1px solid #ffffffaa}.bottle-card span{text-align:left;min-width:0;overflow-wrap:anywhere}
 @media(max-width:760px){.user-row{grid-template-columns:1fr 1fr}.user-row>div:first-child{grid-column:1/-1}}
