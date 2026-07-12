@@ -12,7 +12,7 @@ const now=()=>new Date().toISOString(),showTime=i=>new Date(i).toLocaleString('i
 const actor=()=>profile?.display_name||profile?.email||'Utente',isCT=()=>['ct','admin'].includes(profile?.role),isAdmin=()=>profile?.role==='admin';
 function toast(t,e=false){const x=$('#toast');x.textContent=t;x.style.background=e?'#991b1b':'#172033';x.style.display='block';setTimeout(()=>x.style.display='none',2600)}
 function event(l,text){l.activity.unshift({text,actor:actor(),at:now()});l.activity=l.activity.slice(0,100)}
-function normalize(s){s.bottles=s.bottles||[];s.bottleColors=s.bottleColors||{};s.bottleNames=s.bottleNames||{};s.bottleImages=s.bottleImages||{};for(const n of names)s.lines[n]={...freshLine(n),...(s.lines?.[n]||{})};return s}
+function normalize(s){s.bottles=(s.bottles||[]).map(x=>String(x).trim());s.bottleColors=s.bottleColors||{};s.bottleNames=s.bottleNames||{};s.bottleImages=s.bottleImages||{};for(const n of names){s.lines[n]={...freshLine(n),...(s.lines?.[n]||{})};s.lines[n].bottle=String(s.lines[n].bottle||'').trim()}return s}
 async function signIn(){const email=$('#loginEmail').value.trim(),display_name=$('#loginName').value.trim();if(!email)return toast('Inserisci la tua e-mail',true);const {error}=await db.auth.signInWithOtp({email,options:{data:{display_name},emailRedirectTo:location.origin+location.pathname}});if(error)return toast(error.message,true);$('#access').innerHTML='<h2>Controlla la tua e-mail</h2><p>Apri il link ricevuto per entrare nell’app.</p>'}
 async function signOut(){await db.auth.signOut();location.reload()}
 async function getProfile(){if(!session)return null;const {data,error}=await db.from('profiles').select('*').eq('id',session.user.id).single();if(error)throw error;return data}
