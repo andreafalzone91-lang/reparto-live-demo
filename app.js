@@ -1,7 +1,7 @@
 const $=s=>document.querySelector(s);
 const SUPABASE_URL='https://ghaxikrkosdeelqhfice.supabase.co',KEY='sb_publishable_N_vKWdSfxtnZVGsStl2YGQ_uxdoU3Wb';
 const VAPID_PUBLIC_KEY='BCJXZ0kIKp0-tT4z12oIt3uhEjTcjR9YmF8IbcTQsPMKcaWXD4Tj--mESKXyZJyirqh521q8f9_enNlBVVIRxyU';
-const db=supabase.createClient(SUPABASE_URL,KEY),names=['KD','KP','KF','KR','KT','KA','KW','KK','KO','KB'];
+const db=supabase.createClient(SUPABASE_URL,KEY),names=['KD','KP','KF','KR','KT','KA','KW','KK','KC','KO','KB'];
 const DEMO_MODE=false,IS_RECOVERY=location.hash.includes('type=recovery')||location.search.includes('type=recovery');
 const freshLine=name=>({name,stage:'idle',color:'',bottle:'',productionUnit:'pieces',productionTarget:0,productionDone:0,handoverShift:'',handoverNote:'',handoverBy:'',handoverAt:'',prePieces:10000,bag1:1,bag2:1,extraRequested:false,extraLoaded:false,extraAssignedTo:'',assignedTo:'',lineOwnerId:'',lineOwnerName:'',remainingPieces:null,ctDecision:'',cleanConfirmed:false,nextBottle:'',activity:[]});
 const initial=()=>({bottles:[],bottleColors:{},bottleNames:{},bottleImages:{},bottleLines:{},lines:Object.fromEntries(names.map(n=>[n,freshLine(n)]))});
