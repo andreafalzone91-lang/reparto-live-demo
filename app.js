@@ -11,7 +11,7 @@ const cls=s=>['running'].includes(s)?'progress':['pre','progress','waiting-racla
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const now=()=>new Date().toISOString(),showTime=i=>new Date(i).toLocaleString('it-IT',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'});
 const roleLabels={admin:'Amministratore',ct:'CT',vice_ct:'Vice CT',processista:'Processista',operator:'Operatore',carrellista:'Carrellista'};
-const actor=()=>profile?.display_name||profile?.email||'Utente',isCT=()=>['ct','vice_ct','admin'].includes(profile?.role),isAdmin=()=>profile?.role==='admin';
+const actor=()=>profile?.display_name||profile?.email||'Utente',isCT=()=>['ct','vice_ct','processista','admin'].includes(profile?.role),isAdmin=()=>profile?.role==='admin';
 const canOperateLine=l=>isCT()||!l.lineOwnerId||l.lineOwnerId===profile?.id;
 const unitLabel=l=>l.productionUnit==='ot'?'O.T.':'pezzi';
 const productionRemaining=l=>Math.max(0,Number(l.productionTarget||0)-Number(l.productionDone||0));
@@ -51,9 +51,11 @@ async function loadOperators(){if(!isCT())return;const {data,error}=await db.fro
 async function exportHistory(){try{toast('Preparazione esportazione…');const {data,error}=await db.from('activity_log').select('*').order('created_at',{ascending:false}).limit(10000);if(error)throw error;const q=v=>`"${String(v??'').replace(/"/g,'""')}"`,rows=[['Data e ora','Linea','Operazione','Operatore','Tipo'],...(data||[]).map(e=>[new Date(e.created_at).toLocaleString('it-IT'),e.line,e.event_text,e.actor_name,e.event_kind])],csv='\ufeff'+rows.map(r=>r.map(q).join(';')).join('\r\n'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download=`reparto-live-storico-${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast(`${data.length} attività esportate`)}catch(e){toast(e.message||'Esportazione non riuscita',true)}}
 function startRealtime(){if(liveChannel)db.removeChannel(liveChannel);liveChannel=db.channel('reparto-live-state').on('postgres_changes',{event:'UPDATE',schema:'public',table:'shared_state',filter:'id=eq.1'},payload=>applyRemote(payload.new)).subscribe(status=>setSyncStatus(status==='SUBSCRIBED'?'Sincronizzato in tempo reale':'Connessione in corso…',status==='CHANNEL_ERROR'))}
 async function act(type,x={}){let l=appState.lines[selected];try{
+ const confirmationActions=['take-pre','take-extra','extra-loaded','submit-pre','take-raclage','submit-raclage','confirm-clean'];
+ if(!isCT()&&!confirmationActions.includes(type))throw Error('Questa azione è riservata ad Amministratore, CT, Vice CT e Processista');
  if(type==='undo'){if(!l.undo)throw Error('Non c’è un’azione da annullare');const before=l.undo;appState.lines[selected]={...before,undo:null};l=appState.lines[selected];event(l,'Ultima azione annullata');await save();render();return}
  l.undo=JSON.parse(JSON.stringify({...l,undo:null}));
- if(['start-code','change-code','save-pre','call-raclage','ct-decision','set-stage','reset','assign-line','set-production-plan','queue-add','queue-remove','queue-start-next'].includes(type)&&!isCT())throw Error('Questa azione è riservata al CT');
+ if(['start-code','change-code','save-pre','call-raclage','ct-decision','set-stage','reset','assign-line','set-production-plan','queue-add','queue-remove','queue-start-next','update-production','handover','start-unload','next-load'].includes(type)&&!isCT())throw Error('Questa azione è riservata ad Amministratore, CT, Vice CT e Processista');
  if(!isCT()&&!canOperateLine(l))throw Error(`La linea ${selected} è affidata a ${l.lineOwnerName}`);
  if(type==='assign-line'){const owner=operators.find(o=>o.id===x.ownerId);l.lineOwnerId=owner?.id||'';l.lineOwnerName=owner?.display_name||'';event(l,owner?`Linea affidata a ${owner.display_name} · ${roleLabels[owner.role]||owner.role}`:'Assegnazione rimossa')}
  else if(type==='set-production-plan'){const target=Math.max(0,Number(x.target||0));if(!target)throw Error('Inserisci la quantità da assorbire');if(target<l.productionDone)throw Error('La quantità da assorbire non può essere inferiore alla quantità già assorbita');l.productionUnit=x.unit==='ot'?'ot':'pieces';l.productionTarget=target;l.productionNote=(x.note||'').trim();event(l,`Quantità da assorbire aggiornata: ${target.toLocaleString('it-IT')} ${unitLabel(l)}${l.productionNote?` · ${l.productionNote}`:''}`)}
@@ -68,11 +70,11 @@ async function act(type,x={}){let l=appState.lines[selected];try{
  else if(type==='save-pre'){l.bottle=x.bottle.trim();if(!l.bottle)throw Error('Inserisci il codice flacone');l.prePieces=Math.max(0,Number(x.prePieces||0));l.extraRequested=x.extraRequested;l.extraLoaded=false;l.extraAssignedTo='';l.assignedTo='';l.stage='pre';event(l,`Pre-raclage chiamato: ${l.prePieces.toLocaleString('it-IT')} flaconi mancanti`)}
  else if(type==='take-pre'){l.assignedTo=actor();l.stage='progress';event(l,'Pre-raclage preso in carico')}
  else if(type==='take-extra'){if(l.extraAssignedTo)throw Error('Big bag già preso in carico');l.extraAssignedTo=actor();event(l,'Big bag aggiuntivo preso in carico')}
- else if(type==='extra-loaded'){if(l.extraAssignedTo!==actor()&&!isAdmin())throw Error('Solo chi lo ha preso in carico può confermarlo');l.extraLoaded=true;event(l,'Big bag aggiuntivo caricato')}
- else if(type==='submit-pre'){l.bag1=Number(x.bag1);l.bag2=Number(x.bag2);if(l.extraRequested&&!l.extraLoaded)throw Error('Il big bag aggiuntivo non risulta caricato');l.stage='waiting-raclage';event(l,`Disponibilità: ${l.bag1+l.bag2} big bag`)}
+ else if(type==='extra-loaded'){if(l.extraAssignedTo!==actor()&&!isCT())throw Error('Solo chi lo ha preso in carico può confermarlo');l.extraLoaded=true;event(l,'Big bag aggiuntivo caricato')}
+ else if(type==='submit-pre'){if(l.assignedTo&&l.assignedTo!==actor()&&!isCT())throw Error('Solo chi ha preso in carico il pre-raclage può rispondere');l.bag1=Number(x.bag1);l.bag2=Number(x.bag2);if(l.extraRequested&&!l.extraLoaded)throw Error('Il big bag aggiuntivo non risulta caricato');l.stage='waiting-raclage';event(l,`Disponibilità: ${l.bag1+l.bag2} big bag`)}
  else if(type==='call-raclage'){l.stage='raclage';l.assignedTo='';event(l,'Raclage chiamato')}
  else if(type==='take-raclage'){l.stage='progress';l.assignedTo=actor();l.remainingPieces=-1;event(l,'Verifica raclage presa in carico')}
- else if(type==='submit-raclage'){l.remainingPieces=Math.max(0,Number(x.remainingPieces||0));l.stage='waiting-ct';event(l,`${l.remainingPieces.toLocaleString('it-IT')} pezzi avanzati`)}
+ else if(type==='submit-raclage'){if(l.assignedTo&&l.assignedTo!==actor()&&!isCT())throw Error('Solo chi ha preso in carico il raclage può rispondere');l.remainingPieces=Math.max(0,Number(x.remainingPieces||0));l.stage='waiting-ct';event(l,`${l.remainingPieces.toLocaleString('it-IT')} pezzi avanzati`)}
  else if(type==='ct-decision'){l.ctDecision=x.decision;l.stage=x.decision==='ok'?'raclage-ok':'raclage';event(l,`Risposta CT: ${x.decision==='ok'?'OK':'Non OK'}`)}
  else if(type==='start-unload'){l.stage='unload';l.assignedTo=actor();event(l,'Scarico linea in corso')}
  else if(type==='confirm-clean'){l.cleanConfirmed=true;l.stage='finished';event(l,'Linea completamente pulita')}
