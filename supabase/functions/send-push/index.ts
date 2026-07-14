@@ -28,10 +28,11 @@ async fetch(req:Request){
     const newBottle=text.includes('Produzione iniziata')||text.includes('Inizio carico codice')||text.includes('Codice cambiato')
     const ctPriority=newBottle||text.includes('Pre-raclage chiamato')||text.includes('Raclage chiamato')||text.includes('Scarico linea in corso')||text.includes('Linea riportata a riposo')
     const operatorPriority=text.includes('preso in carico')||text.includes('Disponibilità:')||text.includes('Big bag aggiuntivo caricato')||text.includes('pezzi avanzati')||text.includes('Linea completamente pulita')||text.includes('Obiettivo raggiunto')||text.includes('Passaggio consegne')
-    if(!(newBottle||(sender.role==='operator'?operatorPriority:ctPriority)))return Response.json({sent:0,reason:'non-priority'},{headers:cors})
+    const isManagement=['admin','ct','vice_ct'].includes(sender.role)
+    if(!(newBottle||(isManagement?ctPriority:operatorPriority)))return Response.json({sent:0,reason:'non-priority'},{headers:cors})
 
     let recipients=admin.from('profiles').select('id').eq('status','approved').neq('id',user.id)
-    if(sender.role==='operator'&&!newBottle)recipients=recipients.in('role',['ct','admin'])
+    if(!isManagement&&!newBottle)recipients=recipients.in('role',['ct','vice_ct','admin'])
     const {data:approved,error:profilesError}=await recipients
     if(profilesError)throw profilesError
     const ids=(approved||[]).map((p:{id:string})=>p.id)
