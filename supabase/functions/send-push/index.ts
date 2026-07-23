@@ -33,9 +33,14 @@ async fetch(req:Request){
 
     let recipients=admin.from('profiles').select('id').eq('status','approved').neq('id',user.id)
     if(!isManagement&&!newBottle)recipients=recipients.in('role',['ct','vice_ct','admin'])
-    const {data:approved,error:profilesError}=await recipients
+    const [{data:approved,error:profilesError},{data:settings,error:settingsError}]=await Promise.all([
+      recipients,
+      admin.from('shared_state').select('payload').eq('id',1).single(),
+    ])
     if(profilesError)throw profilesError
-    const ids=(approved||[]).map((p:{id:string})=>p.id)
+    if(settingsError)throw settingsError
+    const notificationUsers=(settings?.payload as {notificationUsers?:Record<string,boolean>}|null)?.notificationUsers||{}
+    const ids=(approved||[]).map((p:{id:string})=>p.id).filter((id:string)=>notificationUsers[id]!==false)
     if(!ids.length)return Response.json({sent:0},{headers:cors})
     const {data:subscriptions,error:subscriptionsError}=await admin.from('push_subscriptions').select('*').in('user_id',ids)
     if(subscriptionsError)throw subscriptionsError
