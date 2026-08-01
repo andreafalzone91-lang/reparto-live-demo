@@ -23,16 +23,18 @@ async fetch(req:Request){
 
     const {events=[]}=await req.json()
     if(!Array.isArray(events)||!events.length)return Response.json({sent:0},{headers:cors})
-    const event=events[events.length-1],extra=events.length>1?` (+${events.length-1})`:''
+    const event=events[events.length-1],extra=events.length>1?` (+${events.length-1})`:'',recipientUserId=String(event.recipientUserId||'')
     const text=String(event.text||'')
     const newBottle=text.includes('Produzione iniziata')||text.includes('Inizio carico codice')||text.includes('Codice cambiato')
     const ctPriority=newBottle||text.includes('Pre-raclage chiamato')||text.includes('Raclage chiamato')||text.includes('Scarico linea in corso')||text.includes('Linea riportata a riposo')
     const operatorPriority=text.includes('preso in carico')||text.includes('Disponibilità:')||text.includes('Big bag aggiuntivo caricato')||text.includes('pezzi avanzati')||text.includes('Linea completamente pulita')||text.includes('Obiettivo raggiunto')||text.includes('Passaggio consegne')
-    const isManagement=['admin','ct','vice_ct','processista'].includes(sender.role)
-    if(!(newBottle||(isManagement?ctPriority:operatorPriority)))return Response.json({sent:0,reason:'non-priority'},{headers:cors})
+    const isManagement=['admin','ct','vice_ct','processista'].includes(sender.role),canAssign=['admin','ct','vice_ct'].includes(sender.role)
+    if(recipientUserId&&(!canAssign||event.kind!=='assignment'))return new Response('Destinatario non autorizzato',{status:403,headers:cors})
+    if(!(recipientUserId||newBottle||(isManagement?ctPriority:operatorPriority)))return Response.json({sent:0,reason:'non-priority'},{headers:cors})
 
     let recipients=admin.from('profiles').select('id').eq('status','approved').neq('id',user.id)
-    if(!isManagement&&!newBottle)recipients=recipients.in('role',['ct','vice_ct','processista','admin'])
+    if(recipientUserId)recipients=recipients.eq('id',recipientUserId)
+    else if(!isManagement&&!newBottle)recipients=recipients.in('role',['ct','vice_ct','processista','admin'])
     const [{data:approved,error:profilesError},{data:settings,error:settingsError}]=await Promise.all([
       recipients,
       admin.from('shared_state').select('payload').eq('id',1).single(),
