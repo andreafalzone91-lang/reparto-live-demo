@@ -62,4 +62,24 @@ main{max-width:1180px;padding:24px}
   .panel,.workspace>aside{padding:17px;border-radius:19px}.area-welcome{padding:25px 20px}.area-choice{border-radius:20px}.access-card{margin:18px 12px;padding:92px 18px 22px}.access-card .actions{display:grid;grid-template-columns:1fr}.access-card .actions button{width:100%}.line-quick-dialog{width:calc(100% - 22px);max-height:92vh;overflow:auto;padding:22px 18px;border-radius:22px}
 }
 @media(max-width:390px){.lines{gap:8px}.line{min-height:265px;padding:9px}.line-image,.line-photo{height:105px}.legend{gap:4px;padding:6px}}
-@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+.archive-dialog-heading small{display:block;margin-top:5px;color:var(--ink-soft);font-weight:500}
+.archive-grid-compact{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.archive-card-compact{min-height:0;padding:15px;gap:5px;background:#fff}
+.archive-card-compact .archive-code{font-size:1.12rem;color:var(--brand-dark);overflow-wrap:anywhere}
+.archive-card-compact .archive-name{min-height:42px;color:var(--ink);font-weight:750;line-height:1.3}
+.archive-card-compact .archive-actions{margin-top:9px}
+.archive-code-review{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:center;margin:16px 0;padding:14px;border:1px solid var(--border);border-radius:16px;background:#f2f5f2}
+.archive-code-review img,.archive-code-review>.no-photo{width:130px;height:145px;object-fit:contain;border-radius:12px;background:#fff}
+.archive-code-review small,.archive-code-review b{display:block}.archive-code-review small{margin-top:9px;color:var(--ink-soft)}.archive-code-review small:first-child{margin-top:0}.archive-code-review b{font-size:1.08rem;overflow-wrap:anywhere}
+.line.pending-operator{box-shadow:0 0 0 0 rgba(238,132,45,.45),0 14px 32px rgba(129,68,13,.15);animation:operatorCardPulse 1.7s ease-in-out infinite}
+.line.pending-operator::after{content:"!";position:absolute;z-index:3;top:13px;right:12px;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#f07820;color:#fff;font-size:1rem;font-weight:950;box-shadow:0 4px 13px rgba(171,75,8,.35);animation:operatorBell 1.15s ease-in-out infinite}
+.operator-request-alert{display:block!important;margin:2px 0;padding:7px 8px;border-radius:9px;background:#fff0df;color:#9b4306;font-weight:900;letter-spacing:.01em}
+.line.pending-operator .line-card-action{animation:operatorButtonPulse 1.25s ease-in-out infinite}
+.task-dialog .bb-station{animation:stationEnter .34s ease-out both}
+@keyframes operatorCardPulse{0%,100%{box-shadow:0 0 0 0 rgba(238,132,45,.40),0 14px 32px rgba(129,68,13,.12)}50%{box-shadow:0 0 0 7px rgba(238,132,45,.10),0 17px 36px rgba(129,68,13,.20)}}
+@keyframes operatorBell{0%,100%{transform:scale(1) rotate(0)}40%{transform:scale(1.12) rotate(-8deg)}65%{transform:scale(1.12) rotate(8deg)}}
+@keyframes operatorButtonPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.16)}}
+@keyframes stationEnter{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+html,body{touch-action:pan-x pan-y}
+@media(max-width:520px){.archive-grid-compact{grid-template-columns:1fr}.archive-code-review{grid-template-columns:105px 1fr}.archive-code-review img,.archive-code-review>.no-photo{width:105px;height:125px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.line.pending-operator,.line.pending-operator::after,.line.pending-operator .line-card-action,.task-dialog .bb-station{animation:none!important}}
