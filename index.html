@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#172033">
+  <meta name="theme-color" content="#17a84a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reparto Live">
@@ -11,12 +11,13 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
-  <link rel="stylesheet" href="./styles.css?v=75">
-  <link rel="stylesheet" href="./auth.css?v=58">
+  <link rel="stylesheet" href="./styles.css?v=76">
+  <link rel="stylesheet" href="./auth.css?v=76">
+  <link rel="stylesheet" href="./design-v76.css?v=76">
 </head>
 <body>
   <header>
-    <div><h1>Reparto Live</h1><p id="appSubtitle">Produzione e controlli di reparto</p></div>
+    <div class="brand-lockup"><span class="brand-mark"><img src="./brand-bottle.png" alt=""></span><div><h1>Reparto Live</h1><p id="appSubtitle">Produzione e controlli di reparto</p></div></div>
     <div id="identity" class="identity"></div>
   </header>
   <section id="access" class="access-card"></section>
@@ -33,6 +34,6 @@
   <div id="toast" role="status" aria-live="polite"></div>
   <script>window.addEventListener('error',e=>{const x=document.getElementById('access');if(x&&!x.textContent)x.innerHTML='<h2>Errore di apertura</h2><p>'+e.message+'</p>'})</script>
   <script src="./supabase.js?v=8"></script>
-  <script src="./app.js?v=75"></script>
+  <script src="./app.js?v=76"></script>
 </body>
 </html>
