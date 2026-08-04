@@ -11,15 +11,16 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
-  <link rel="stylesheet" href="./styles.css?v=77">
-  <link rel="stylesheet" href="./auth.css?v=77">
-  <link rel="stylesheet" href="./design-v76.css?v=77">
+  <link rel="stylesheet" href="./styles.css?v=78">
+  <link rel="stylesheet" href="./auth.css?v=78">
+  <link rel="stylesheet" href="./design-v76.css?v=78">
 </head>
 <body>
   <header>
     <div class="brand-lockup"><span class="brand-mark"><img src="./brand-bottle.png" alt=""></span><div><h1>Reparto Live</h1><p id="appSubtitle">Produzione e controlli di reparto</p></div></div>
     <div id="identity" class="identity"></div>
   </header>
+  <section id="previewBanner" class="preview-banner" hidden></section>
   <section id="access" class="access-card"></section>
   <main id="areaHome" hidden></main>
   <main id="checklistApp" hidden></main>
@@ -34,6 +35,6 @@
   <div id="toast" role="status" aria-live="polite"></div>
   <script>window.addEventListener('error',e=>{const x=document.getElementById('access');if(x&&!x.textContent)x.innerHTML='<h2>Errore di apertura</h2><p>'+e.message+'</p>'})</script>
   <script src="./supabase.js?v=8"></script>
-  <script src="./app.js?v=77"></script>
+  <script src="./app.js?v=78"></script>
 </body>
 </html>
