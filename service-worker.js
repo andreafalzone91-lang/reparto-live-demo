@@ -1,4 +1,4 @@
-const CACHE = 'reparto-live-v86';
+const CACHE = 'reparto-live-v87';
 const FILES = ['./', './index.html', './styles.css', './auth.css', './design-v76.css', './supabase.js', './app.js', './manifest.json', './icon.svg', './brand-bottle.png', './brand-logo.jpg', './brand-pattern.jpg'];
 self.addEventListener('install', event => event.waitUntil(Promise.all([caches.open(CACHE).then(cache => cache.addAll(FILES)),self.skipWaiting()])));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(()=>self.clients.claim())));
