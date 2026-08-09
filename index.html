@@ -11,9 +11,9 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
-  <link rel="stylesheet" href="./styles.css?v=89">
-  <link rel="stylesheet" href="./auth.css?v=89">
-  <link rel="stylesheet" href="./design-v76.css?v=89">
+  <link rel="stylesheet" href="./styles.css?v=90">
+  <link rel="stylesheet" href="./auth.css?v=90">
+  <link rel="stylesheet" href="./design-v76.css?v=90">
 </head>
 <body>
   <header>
@@ -26,6 +26,9 @@
   <main id="checklistApp" hidden></main>
   <main id="app" hidden>
     <div class="legend"><span class="green">In corso</span><span class="orange">Pre-raclage</span><span class="yellow">Raclage</span><span class="blue">Scarico</span><span class="red">Finito</span></div>
+    <div id="homeLineToolbar" class="home-line-toolbar" hidden>
+      <button type="button" class="home-bottle-add" onclick="showBottleEditorMenu()" aria-label="Crea o modifica flacone"><span aria-hidden="true">＋</span><strong>Crea o modifica flacone</strong></button>
+    </div>
     <section id="lines" class="lines" aria-label="Linee"></section>
     <section class="workspace">
       <div id="panel" class="panel"></div>
@@ -36,6 +39,6 @@
   <div id="toast" role="status" aria-live="polite"></div>
   <script>window.addEventListener('error',e=>{const x=document.getElementById('access');if(x&&!x.textContent)x.innerHTML='<h2>Errore di apertura</h2><p>'+e.message+'</p>'})</script>
   <script src="./supabase.js?v=8"></script>
-  <script src="./app.js?v=89"></script>
+  <script src="./app.js?v=90"></script>
 </body>
 </html>
