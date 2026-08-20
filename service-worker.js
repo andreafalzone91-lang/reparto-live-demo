@@ -1,5 +1,5 @@
-const CACHE = 'reparto-live-v124';
-const FILES = ['./', './index.html', './styles.css', './auth.css', './design-v76.css', './serioplast-v95.css', './supabase.js', './app.js', './manifest.json', './icon.svg', './brand-bottle.png', './brand-logo.jpg', './brand-pattern.jpg'];
+const CACHE = 'reparto-live-v125';
+const FILES = ['./', './index.html', './styles.css', './auth.css', './design-v76.css', './serioplast-v95.css', './supabase.js', './app.js', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './brand-bottle.png', './brand-logo.jpg', './brand-pattern.jpg'];
 self.addEventListener('install', event => event.waitUntil(Promise.all([caches.open(CACHE).then(cache => cache.addAll(FILES)),self.skipWaiting()])));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch', event => {
@@ -12,7 +12,7 @@ self.addEventListener('fetch', event => {
 self.addEventListener('push',event=>{
   let data={title:'Reparto Live',body:'Nuovo aggiornamento dal reparto',line:''};
   try{data={...data,...event.data.json()}}catch{}
-  event.waitUntil(self.registration.showNotification(data.title,{body:data.body,icon:'./icon.svg',badge:'./icon.svg',tag:data.line?`line-${data.line}`:'reparto-live',data:{url:'./'}}));
+  event.waitUntil(self.registration.showNotification(data.title,{body:data.body,icon:'./icon-192.png',badge:'./icon-192.png',tag:data.line?`line-${data.line}`:'reparto-live',data:{url:'./'}}));
 });
 self.addEventListener('notificationclick',event=>{
   event.notification.close();
