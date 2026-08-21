@@ -88,6 +88,16 @@ button,input,select,textarea{border-radius:10px}button{font-weight:800;box-shado
 
 @media(prefers-reduced-motion:reduce){.wip-badge{animation:none}}
 
+/* Identità del flacone nella vignetta: nome e codice in lettura verticale. */
+.line .line-bottle-name{min-height:0;margin-top:1px;font-size:1.06rem;font-weight:850;line-height:1.18;color:var(--ink);overflow-wrap:anywhere}
+.line .line-bottle-code{display:block;margin:0;font-size:1.08rem;font-weight:950;line-height:1.05;letter-spacing:.01em;color:var(--serio-green-dark);overflow-wrap:anywhere}
+.line .line-task-owner{order:initial;margin-top:2px}
+@media(max-width:390px){.line .line-bottle-name{font-size:.92rem}.line .line-bottle-code{font-size:.96rem}}
+.archive-search{margin:14px 0 4px}.archive-search input{font-size:1rem;background:#fff}.archive-result-count{display:block;margin-bottom:10px;color:var(--serio-muted);font-weight:800}.archive-card[hidden]{display:none!important}
+.archive-search-only .archive-grid:empty{display:none}.archive-search-only .archive-target{margin-top:12px}
+.delete-bottle-edit{margin-left:auto;border-color:#ef4444!important;background:#fff5f5!important;color:#b91c1c!important}
+@media(max-width:520px){.delete-bottle-edit{width:100%;margin-left:0}}
+
 .preview-banner{display:block;padding:7px calc(var(--header-side-space) + var(--safe-right)) 7px calc(var(--header-side-space) + var(--safe-left));background:#fff7cf}.preview-banner-toggle{display:flex;width:100%;min-height:38px;align-items:center;justify-content:space-between;padding:5px 9px;border:0;background:transparent!important;color:#5e4600!important;text-align:left;box-shadow:none!important}.preview-banner-toggle span{display:flex;align-items:center;gap:10px}.preview-banner-toggle strong{font-size:.78rem}.preview-banner-toggle small{font-size:.7rem;font-weight:750;color:#806100}.preview-banner-toggle b{font-size:1.15rem}.preview-banner-content{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:7px 9px 4px;border-top:1px solid #edc45b}.preview-banner-content>span{font-size:.76rem;line-height:1.35}.preview-banner-content[hidden]{display:none}.preview-banner-actions{display:flex;flex:0 0 auto;gap:7px}
 @media(max-width:760px){.preview-banner{padding:6px calc(14px + var(--safe-right)) 6px calc(14px + var(--safe-left))}.preview-banner-toggle span{display:flex}.preview-banner-content{align-items:stretch;flex-direction:column}.preview-banner-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}}
 
