@@ -14,11 +14,12 @@
   <link rel="stylesheet" href="./styles.css?v=94">
   <link rel="stylesheet" href="./auth.css?v=131">
   <link rel="stylesheet" href="./design-v76.css?v=111">
-  <link rel="stylesheet" href="./serioplast-v95.css?v=143">
+  <link rel="stylesheet" href="./serioplast-v95.css?v=158">
 </head>
 <body>
   <header>
-    <div class="brand-lockup"><img class="header-wordmark" src="./brand-logo.jpg" alt="Serioplast"><span class="brand-mark"><img src="./brand-bottle.png" alt=""></span><div><h1 id="appTitle">Reparto Live</h1><p id="appSubtitle">Produzione e controlli di reparto</p></div></div>
+    <div class="brand-lockup"><img class="header-wordmark" src="./brand-logo.jpg" alt="Serioplast"><span class="brand-mark"><img src="./brand-bottle.png" alt=""></span><div class="header-area-title"><h1 id="appTitle">Reparto Live</h1><p id="appSubtitle">Produzione e controlli di reparto</p></div><div id="headerUserIdentity" class="header-user-identity"></div></div>
+    <div id="headerProductionTools" class="header-production-tools" hidden></div>
     <div id="identity" class="identity"></div>
   </header>
   <section id="previewBanner" class="preview-banner" hidden></section>
@@ -28,14 +29,11 @@
   <main id="shiftsApp" hidden></main>
   <main id="logisticsApp" hidden></main>
   <main id="app" hidden>
-    <div class="legend"><span class="green">In corso</span><span class="orange">Pre-raclage</span><span class="yellow">Raclage</span><span class="blue">Scarico</span><span class="red">Finito</span></div>
+    <div class="production-viewbar"><div class="legend"><span class="green">In corso</span><span class="orange">Pre-raclage</span><span class="yellow">Raclage</span><span class="blue">Scarico</span><span class="red">Finito</span></div><button type="button" id="lineLayoutToggle" class="line-layout-toggle" aria-label="Cambia disposizione delle linee"></button></div>
     <section id="productionQuickTools" class="production-quick-tools" aria-label="Comunicazioni e resi" hidden>
       <section id="productionTeamChatHome" hidden></section>
       <section id="lineReturnsWidget" class="line-returns-widget" hidden></section>
     </section>
-    <div id="homeLineToolbar" class="home-line-toolbar" hidden>
-      <button type="button" class="home-bottle-add" onclick="showBottleEditorMenu()" aria-label="Crea o modifica flacone"><span aria-hidden="true">＋</span><strong>Crea o modifica flacone</strong></button>
-    </div>
     <section id="lines" class="lines" aria-label="Linee"></section>
     <section class="workspace">
       <div id="panel" class="panel"></div>
@@ -49,6 +47,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
   <script src="./codifica-catalog.js?v=131"></script>
-  <script src="./app.js?v=143"></script>
+  <script src="./turni-settembre-2026.js?v=158"></script>
+  <script src="./app.js?v=158"></script>
 </body>
 </html>
