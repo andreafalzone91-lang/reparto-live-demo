@@ -1,4 +1,4 @@
-const CACHE = 'reparto-live-v158';
+const CACHE = 'serioflow-v165';
 const FILES = ['./', './index.html', './styles.css', './auth.css', './design-v76.css', './serioplast-v95.css', './supabase.js', './codifica-catalog.js', './turni-settembre-2026.js', './app.js', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './brand-bottle.png', './brand-logo.jpg', './brand-pattern.jpg', './assets/forklifts/muletto-checklist.png', './assets/transpallet/transpallet-elettrico-tipo-1.png', './assets/transpallet/transpallet-elettrico-piccolo.png', './assets/machines/sidel-checklist.png', './assets/machines/magic-checklist.png'];
 self.addEventListener('install', event => event.waitUntil(Promise.all([caches.open(CACHE).then(cache => cache.addAll(FILES)),self.skipWaiting()])));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(()=>self.clients.claim())));
@@ -10,7 +10,7 @@ self.addEventListener('fetch', event => {
   }).catch(() => caches.match(event.request)));
 });
 self.addEventListener('push',event=>{
-  let data={title:'Reparto Live',body:'Nuovo aggiornamento dal reparto',line:''};
+  let data={title:'SerioFlow',body:'Nuovo aggiornamento dal reparto',line:''};
   try{data={...data,...event.data.json()}}catch{}
   event.waitUntil(self.registration.showNotification(data.title,{body:data.body,icon:'./icon-192.png',badge:'./icon-192.png',tag:data.line?`line-${data.line}`:'reparto-live',data:{url:'./'}}));
 });
