@@ -1,0 +1,5 @@
+SerioFlow
+Versione applicazione: 165
+Data aggiornamento: 11 settembre 2026
+Ambito: Magazzino Live + Checklist mezzi e macchine + Turni da settembre 2026
+Logistica: rinviata, presente soltanto per compatibilità del progetto originale
