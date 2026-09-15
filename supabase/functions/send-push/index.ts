@@ -28,13 +28,13 @@ async fetch(req:Request){
     const newBottle=text.includes('Produzione iniziata')||text.includes('Inizio carico codice')||text.includes('Codice cambiato')
     const ctPriority=newBottle||text.includes('Pre-raclage chiamato')||text.includes('Raclage chiamato')||text.includes('Scarico linea in corso')||text.includes('Linea riportata a riposo')
     const operatorPriority=text.includes('preso in carico')||text.includes('Disponibilità:')||text.includes('Big bag aggiuntivo caricato')||text.includes('pezzi avanzati')||text.includes('Linea completamente pulita')||text.includes('Obiettivo raggiunto')||text.includes('Passaggio consegne')
-    const isManagement=['admin','ct','vice_ct','processista'].includes(sender.role),canAssign=['admin','ct','vice_ct'].includes(sender.role)
+    const isManagement=['admin','ct','vice_ct','processista','direttore'].includes(sender.role),canAssign=['admin','ct','vice_ct','direttore'].includes(sender.role)
     if(recipientUserId&&(!canAssign||event.kind!=='assignment'))return new Response('Destinatario non autorizzato',{status:403,headers:cors})
     if(!(recipientUserId||newBottle||(isManagement?ctPriority:operatorPriority)))return Response.json({sent:0,reason:'non-priority'},{headers:cors})
 
     let recipients=admin.from('profiles').select('id').eq('status','approved').neq('id',user.id)
     if(recipientUserId)recipients=recipients.eq('id',recipientUserId)
-    else if(!isManagement&&!newBottle)recipients=recipients.in('role',['ct','vice_ct','processista','admin'])
+    else if(!isManagement&&!newBottle)recipients=recipients.in('role',['ct','vice_ct','processista','direttore','admin'])
     const [{data:approved,error:profilesError},{data:settings,error:settingsError}]=await Promise.all([
       recipients,
       admin.from('shared_state').select('payload').eq('id',1).single(),
@@ -49,7 +49,7 @@ async fetch(req:Request){
 
     webpush.setVapidDetails('mailto:andreafalzone91@live.it',Deno.env.get('VAPID_PUBLIC_KEY')!,Deno.env.get('VAPID_PRIVATE_KEY')!)
     const who=sender.display_name||'Utente'
-    const payload=JSON.stringify({title:`Reparto Live · Linea ${event.line}`,body:`${who}: ${event.text}${extra}`,line:event.line})
+    const payload=JSON.stringify({title:`SerioFlow · Linea ${event.line}`,body:`${who}: ${event.text}${extra}`,line:event.line})
     const expired:number[]=[]
     const results=await Promise.allSettled((subscriptions||[]).map(async(s:any)=>{
       try{await webpush.sendNotification({endpoint:s.endpoint,keys:{p256dh:s.p256dh,auth:s.auth}},payload)}
