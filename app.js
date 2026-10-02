@@ -587,9 +587,10 @@ function showShiftImportDialog(){if(!canImportShifts())return toast('Solo Ammini
 function invalidImportedShiftPeople(){
  const assignments=appState.shifts.assignments||{};
  return appState.shifts.people.filter(person=>{
-  const hasAssignments=Object.keys(assignments).some(key=>key.startsWith(`${person.id}|`)&&assignments[key]);
+ const hasAssignments=Object.keys(assignments).some(key=>key.startsWith(`${person.id}|`)&&assignments[key]);
   const hasIdentity=!!normalizeShiftImportText(person.jobTitle||person.teamName);
-  return !hasAssignments&&!hasIdentity
+  const isSheetHeading=/^(?:TRAVASO|CELLE(?:\s+DI\s+CARICO.*)?|\d+)$/i.test(normalizeShiftImportText(person.name));
+  return isSheetHeading||(!hasAssignments&&!hasIdentity)
  })
 }
 async function cleanInvalidShiftImport(){
