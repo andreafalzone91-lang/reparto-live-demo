@@ -14,3 +14,15 @@
 .home-three-areas{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.home-three-areas .area-choice{min-height:235px;padding:20px;gap:12px 14px}.home-three-areas .area-choice.is-wip{padding-top:56px}.home-three-areas .warehouse-choice{grid-template-rows:auto 1fr auto;min-height:235px}.home-three-areas .warehouse-choice-icon{width:62px;height:62px;border-radius:19px}.home-three-areas .warehouse-choice-icon svg{width:46px;height:46px}.home-three-areas .warehouse-choice .area-choice-copy strong{font-size:1.45rem}.home-three-areas .warehouse-choice .area-choice-copy small{font-size:.9rem}.home-three-areas .area-choice-brand{width:145px;height:42px}.shifts-choice{background:linear-gradient(145deg,#fef3c7,#fff 72%)}
 @media(max-width:980px){.home-three-areas{grid-template-columns:repeat(2,minmax(0,1fr))}.home-three-areas .production-choice{grid-column:1/-1}}
 @media(max-width:760px){.home-three-areas{grid-template-columns:1fr}.home-three-areas .production-choice{grid-column:auto}.home-three-areas .area-choice,.home-three-areas .warehouse-choice{min-height:205px}}
+.deck-decision{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.deck-decision label{display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:8px 12px;border:2px solid #ccd9d0;border-radius:12px;background:#fff;font-weight:800;cursor:pointer}
+.deck-decision input{width:20px;height:20px;margin:0;accent-color:#11813d}
+.deck-decision .is-correct{color:#106f35}
+.deck-decision .is-wrong{color:#a42828}
+.deck-decision .is-wrong input{accent-color:#c53535}
+.deck-import-row.is-rejected{border-color:#e39b9b;background:#fff2f2;box-shadow:inset 5px 0 #c53535}
+.deck-import-row.is-rejected .deck-row-status{color:#a42828}
+.deck-import-row.is-verified{border-color:#55bd78;background:#effbf2;box-shadow:inset 5px 0 #159447}
+.deck-import-row.is-verified .deck-row-status{color:#106f35}
+.deck-review-confirmed{color:#106f35;white-space:nowrap}
+@media(max-width:640px){.deck-decision{display:grid;grid-template-columns:1fr 1fr}.deck-decision label{padding:8px 6px;font-size:.92rem}}
