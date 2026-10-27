@@ -11,8 +11,16 @@ La replica può essere dichiarata conforme soltanto se supera queste prove su co
 - [ ] Digitando un codice presente nell'archivio compare automaticamente il nome flacone.
 - [ ] Prima dell'invio compare il riepilogo obbligatorio.
 - [ ] Dopo la foto parte la lettura automatica orizzontale di linea, codice, assorbito e totale.
+- [ ] Se la barra tra assorbito e totale non viene riconosciuta, il lettore recupera le ultime due quantità della riga senza usare Consegna o Tramoggia Qty.
+- [ ] Se una o più fasce non vengono riconosciute, è possibile confermare quelle lette e verificate; tutte le altre linee rimangono invariate.
+- [ ] Negli screenshot del deck ogni fascia verde viene individuata e letta separatamente, anche senza intestazione della tabella.
+- [ ] Prima e ultima fascia visibile non vengono escluse da ritagli automatici.
+- [ ] Se il numero di righe complete riconosciute è inferiore alle fasce verdi individuate, la conferma rimane bloccata.
 - [ ] Ogni riga deve essere confermata singolarmente dopo il confronto con la fotografia.
-- [ ] Il salvataggio finale resta disabilitato finché non viene confermata anche la lista delle linee da svuotare.
+- [ ] Ogni riga riconosciuta mostra il proprio ritaglio originale, ingrandibile con un tocco, accanto ai dati letti.
+- [ ] Il contatore **Verificate X di Y** si aggiorna dopo ogni decisione e il riepilogo resta disabilitato finché tutte le righe non sono state controllate.
+- [ ] Se una riga viene indicata come non corretta, codice e quantità restano modificabili e la riga deve essere verificata nuovamente.
+- [ ] Il salvataggio aggiorna soltanto le linee riconosciute e confermate; tutte le altre mantengono codice, quantità e stato precedenti.
 - [ ] Una lettura incompleta o un codice non presente nell'archivio non può essere salvato.
 - [ ] **Archivio foto** conserva immagine, dati applicati, autore, ora e dispositivo.
 - [ ] L'aggiornamento arriva su un secondo dispositivo e viene registrato nello storico delle linee.
@@ -36,6 +44,8 @@ La replica può essere dichiarata conforme soltanto se supera queste prove su co
 - [ ] Nuovo profilo in attesa dell'Amministratore.
 - [ ] Utente non approvato non vede i dati del reparto.
 - [ ] Solo Amministratore approva, blocca, riattiva e assegna il ruolo.
+- [ ] Una nuova richiesta presenta le azioni separate **Accetta** e **Rifiuta**; il rifiuto sposta la persona nell'Archivio utenti come bloccata e resta reversibile.
+- [ ] Aprendo il Menu Amministratore la campanella esterna delle richieste viste si spegne, ma la richiesta rimane in **Nuove richieste** finché non viene accettata o rifiutata.
 - [ ] Login con e-mail e password.
 - [ ] Login con username e password.
 - [ ] Recupero e cambio password.
@@ -82,6 +92,7 @@ La replica può essere dichiarata conforme soltanto se supera queste prove su co
 - [ ] Impossibile superare l'obiettivo.
 - [ ] Home e pagina Avanzamento mostrano lo stesso valore.
 - [ ] È visibile l'ora dell'ultimo aggiornamento.
+- [ ] Quando restano da 1 a 20.000 pezzi, sotto l'ora compare in rosso la quantità ancora da assorbire; sopra 20.000, a residuo zero e per le O.T. l'avviso non compare.
 - [ ] La giornata produttiva cambia alle 06:00.
 
 ## F. Pre-raclage
